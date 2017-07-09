@@ -18,10 +18,8 @@ library
     ghc-options:         -Wall
     default-language:    Haskell2010
     default-extensions:  OverloadedStrings
-    exposed-modules:     SD.Utility.Scientific
-                       , SD.Utility.IO
+    exposed-modules:     SD.Utility.IO
     build-depends:       base >= 4.7 && < 5
-                       , scientific >= 0.3.4.15
 
 test-suite sd-utility-test
     type:                exitcode-stdio-1.0
