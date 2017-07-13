@@ -1,3 +1,5 @@
+--------------------------------------------------------------------------------
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 --------------------------------------------------------------------------------
@@ -7,8 +9,8 @@ module SD.Utility.IO where
 --------------------------------------------------------------------------------
 
 import Control.Exception (SomeException, catch)
-import System.IO         (FilePath, Handle, IOMode)
-import System.IO         as S (hClose, openFile)
+import System.IO (FilePath, Handle, IOMode)
+import System.IO as S (hClose, openFile)
 
 --------------------------------------------------------------------------------
 
@@ -21,3 +23,5 @@ openFile p m = (Right <$> S.openFile p m) `catch`
 hClose :: Handle -> IO (Either SomeException ())
 hClose h = (Right <$> S.hClose h) `catch`
     (\(e :: SomeException) -> return . Left $ e)
+
+--------------------------------------------------------------------------------

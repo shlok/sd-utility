@@ -1,3 +1,5 @@
+--------------------------------------------------------------------------------
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 --------------------------------------------------------------------------------
@@ -59,3 +61,5 @@ testHClose =
         eEmptyTuple <- hClose handle
         assertBool "Expected Right" $ isRight eEmptyTuple
         assertBool "Expected empty tuple" $ (rights [eEmptyTuple]) !! 0 == ()
+
+--------------------------------------------------------------------------------
