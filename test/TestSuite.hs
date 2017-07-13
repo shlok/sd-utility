@@ -5,6 +5,7 @@ module Main where
 --------------------------------------------------------------------------------
 
 import qualified SD.Utility.IO.Tests
+import qualified SD.Utility.Scientific.Tests
 
 import Test.Tasty (TestTree, defaultMain, testGroup)
 
@@ -17,4 +18,6 @@ tests :: TestTree
 tests =
     testGroup "Tests"
         [ testGroup "SD.Utility.IO.Tests"
-                     SD.Utility.IO.Tests.tests ]
+                     SD.Utility.IO.Tests.tests,
+          testGroup "SD.Utility.Scientific.Tests"
+                     SD.Utility.Scientific.Tests.tests ]
