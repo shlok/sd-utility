@@ -25,10 +25,10 @@ tests =
 testIntegralP :: TestTree
 testIntegralP =
     testCase "integralP" $ do
-        assertEqual "(1)" (readP_to_S (integralP @Int) "123") $
-            [(1,"23"), (12, "3"), (123, "")]
-        assertEqual "(2)" (readP_to_S (integralP @Int) "12z") $
-            [(1,"2z"), (12, "z")]
-        assertEqual "(3)" (readP_to_S (integralP @Int) "z12") []
+        let parser = readP_to_S (integralP @Int)
+        assertEqual "(1)" (parser "123") [(1,"23"), (12, "3"), (123, "")]
+        assertEqual "(2)" (parser "12z") [(1,"2z"), (12, "z")]
+        assertEqual "(3)" (parser "001") [(0, "01"), (0, "1"), (1, "")]
+        assertEqual "(4)" (parser "z12") []
 
 --------------------------------------------------------------------------------

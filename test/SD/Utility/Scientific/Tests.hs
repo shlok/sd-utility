@@ -13,16 +13,25 @@ import SD.Utility.Scientific
 import Data.Maybe (fromJust, isJust, isNothing)
 import Data.Scientific (scientific)
 import Test.Tasty (TestTree)
-import Test.Tasty.HUnit (assertBool, testCase)
+import Test.Tasty.HUnit (assertBool, assertEqual, testCase)
+import Text.ParserCombinators.ReadP (readP_to_S)
 
 --------------------------------------------------------------------------------
 
 tests :: [TestTree]
 tests =
-    [ testScientificToRealFloat_1,
+    [ testRealFloatP,
+      testScientificToRealFloat_1,
       testScientificToRealFloat_2 ]
 
 --------------------------------------------------------------------------------
+
+testRealFloatP :: TestTree
+testRealFloatP =
+    testCase "realFloatP" $ do
+        let parser = readP_to_S (realFloatP @Double)
+        assertEqual "(1)" (parser "1.0e3") [(1, "e3"), (1000, "")]
+        assertEqual "(2)" (parser "1.0e1000") [(1, "e1000")]
 
 testScientificToRealFloat_1 :: TestTree
 testScientificToRealFloat_1 =
