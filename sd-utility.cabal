@@ -18,7 +18,8 @@ library
     ghc-options:         -Wall
     default-language:    Haskell2010
     default-extensions:  OverloadedStrings
-    exposed-modules:     SD.Utility.Exception
+    exposed-modules:     SD.Utility.Either
+                       , SD.Utility.Exception
                        , SD.Utility.IO
                        , SD.Utility.Read
                        , SD.Utility.Scientific
