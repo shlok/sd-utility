@@ -10,4 +10,10 @@ leftToRight f b e =
         Left a -> if f a then Right b else Left a
         Right b' -> Right b'
 
+rightToLeft :: (b -> Bool) -> a -> Either a b -> Either a b
+rightToLeft f a e =
+    case e of
+        Left a' -> Left a'
+        Right b -> if f b then Left a else Right b
+
 --------------------------------------------------------------------------------
