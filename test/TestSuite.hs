@@ -4,6 +4,7 @@ module Main where
 
 --------------------------------------------------------------------------------
 
+import qualified SD.Utility.Calendar.Tests
 import qualified SD.Utility.Exception.Tests
 import qualified SD.Utility.IO.Tests
 import qualified SD.Utility.Read.Tests
@@ -19,7 +20,9 @@ main = defaultMain tests
 tests :: TestTree
 tests =
     testGroup "Tests"
-        [ testGroup "SD.Utility.Exception.Tests"
+        [ testGroup "SD.Utility.Calendar.Tests"
+                     SD.Utility.Calendar.Tests.tests,
+          testGroup "SD.Utility.Exception.Tests"
                      SD.Utility.Exception.Tests.tests,
           testGroup "SD.Utility.IO.Tests"
                      SD.Utility.IO.Tests.tests,
