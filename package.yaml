@@ -11,8 +11,8 @@ github:         shlok/sd-utility
 
 dependencies:
 - base >=4.7 && <5
-- scientific >=0.3.5.1
-- time >=1.6.0.1
+- scientific
+- time
 
 library:
   source-dirs: src
