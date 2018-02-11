@@ -30,3 +30,5 @@ tests =
                      SD.Utility.Read.Tests.tests,
           testGroup "SD.Utility.Scientific.Tests"
                      SD.Utility.Scientific.Tests.tests ]
+
+--------------------------------------------------------------------------------
