@@ -11,6 +11,8 @@ github:         shlok/sd-utility
 
 dependencies:
 - base >=4.7 && <5
+- containers
+- random
 - scientific
 - time
 
@@ -24,6 +26,7 @@ library:
   - SD.Utility.Calendar
   - SD.Utility.Exception
   - SD.Utility.IO
+  - SD.Utility.Random
   - SD.Utility.Read
   - SD.Utility.Scientific
 
