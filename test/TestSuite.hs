@@ -9,6 +9,7 @@ import qualified SD.Utility.Exception.Tests
 import qualified SD.Utility.IO.Tests
 import qualified SD.Utility.Read.Tests
 import qualified SD.Utility.Scientific.Tests
+import qualified SD.Utility.Streaming.Tests
 
 import Test.Tasty (TestTree, defaultMain, testGroup)
 
@@ -29,6 +30,8 @@ tests =
           testGroup "SD.Utility.Read.Tests"
                      SD.Utility.Read.Tests.tests,
           testGroup "SD.Utility.Scientific.Tests"
-                     SD.Utility.Scientific.Tests.tests ]
+                     SD.Utility.Scientific.Tests.tests,
+          testGroup "SD.Utility.Streaming.Tests"
+                     SD.Utility.Streaming.Tests.tests ]
 
 --------------------------------------------------------------------------------
