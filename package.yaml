@@ -29,6 +29,8 @@ library:
   - SD.Utility.Calendar
   - SD.Utility.Exception
   - SD.Utility.IO
+  - SD.Utility.MaxLengthSequence
+  - SD.Utility.MinMaxSequence
   - SD.Utility.Random
   - SD.Utility.Read
   - SD.Utility.Scientific

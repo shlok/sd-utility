@@ -7,6 +7,8 @@ module Main where
 import qualified SD.Utility.Calendar.Tests
 import qualified SD.Utility.Exception.Tests
 import qualified SD.Utility.IO.Tests
+import qualified SD.Utility.MaxLengthSequence.Tests
+import qualified SD.Utility.MinMaxSequence.Tests
 import qualified SD.Utility.Read.Tests
 import qualified SD.Utility.Scientific.Tests
 import qualified SD.Utility.Streaming.Tests
@@ -27,6 +29,10 @@ tests =
                      SD.Utility.Exception.Tests.tests,
           testGroup "SD.Utility.IO.Tests"
                      SD.Utility.IO.Tests.tests,
+          testGroup "SD.Utility.MaxLengthSequence.Tests"
+                     SD.Utility.MaxLengthSequence.Tests.tests,
+          testGroup "SD.Utility.MinMaxSequence.Tests"
+                     SD.Utility.MinMaxSequence.Tests.tests,
           testGroup "SD.Utility.Read.Tests"
                      SD.Utility.Read.Tests.tests,
           testGroup "SD.Utility.Scientific.Tests"
