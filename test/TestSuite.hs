@@ -9,6 +9,7 @@ import qualified SD.Utility.Exception.Tests
 import qualified SD.Utility.IO.Tests
 import qualified SD.Utility.MaxLengthSequence.Tests
 import qualified SD.Utility.MinMaxSequence.Tests
+import qualified SD.Utility.MovingAverage.Tests
 import qualified SD.Utility.Read.Tests
 import qualified SD.Utility.Scientific.Tests
 import qualified SD.Utility.Streaming.Tests
@@ -33,6 +34,8 @@ tests =
                      SD.Utility.MaxLengthSequence.Tests.tests,
           testGroup "SD.Utility.MinMaxSequence.Tests"
                      SD.Utility.MinMaxSequence.Tests.tests,
+          testGroup "SD.Utility.MovingAverage.Tests"
+                     SD.Utility.MovingAverage.Tests.tests,
           testGroup "SD.Utility.Read.Tests"
                      SD.Utility.Read.Tests.tests,
           testGroup "SD.Utility.Scientific.Tests"
