@@ -9,6 +9,7 @@ import Data.Time.Calendar.Easter (sundayAfter)
 
 --------------------------------------------------------------------------------
 
+{-@ sundayBetween :: d1:_ -> d2:_ -> _ / [ if d1 > d2 then 1 else 0 ] @-}
 sundayBetween :: Day -> Day -> Bool
 sundayBetween d1 d2
     | d1 == d2 = False
