@@ -18,9 +18,9 @@ import Data.Maybe (fromJust)
 --------------------------------------------------------------------------------
 
 data MovingAvg a = MovingAvg {
-      count :: Int
-    , mlSeq :: MLSeq a
-    , currMA :: a
+      count  :: !Int
+    , mlSeq  :: !(MLSeq a)
+    , currMA :: !a
     }
 
 -- | Please provide a positive count. (Returns 'Nothing' otherwise.)

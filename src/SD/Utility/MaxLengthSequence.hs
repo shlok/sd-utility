@@ -24,9 +24,10 @@ import qualified Data.Sequence as Seq (empty, length)
 --------------------------------------------------------------------------------
 
 data MLSeq a = MLSeq {
-      maxLength :: Int
-    , elemsSeq :: Seq a
-    } deriving (Show)
+      maxLength :: !Int
+    , elemsSeq  :: !(Seq a)
+    }
+    deriving (Show)
 
 -- | Please provide a positive maximum length. (Returns 'Nothing' otherwise.)
 empty :: Int -> Maybe (MLSeq a)

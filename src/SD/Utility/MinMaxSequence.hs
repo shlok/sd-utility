@@ -30,9 +30,9 @@ import qualified Data.Map.Strict as Map (empty, lookupMax, lookupMin)
 --------------------------------------------------------------------------------
 
 data MMSeq a = MMSeq {
-      maxLength :: Int
-    , mlSeq :: MLSeq a
-    , elemsMap :: Map a Int
+      maxLength :: !Int
+    , mlSeq     :: !(MLSeq a)
+    , elemsMap  :: !(Map a Int)
     }
 
 -- | Please provide a positive maximum length. (Returns 'Nothing' otherwise.)
