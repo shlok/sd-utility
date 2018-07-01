@@ -27,6 +27,7 @@ library:
   exposed-modules:
   - SD.Utility.Either
   - SD.Utility.Calendar
+  - SD.Utility.ExpMovingAverage
   - SD.Utility.Exception
   - SD.Utility.IO
   - SD.Utility.MaxLengthSequence
