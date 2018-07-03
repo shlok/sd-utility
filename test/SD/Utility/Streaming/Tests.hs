@@ -10,21 +10,25 @@ module SD.Utility.Streaming.Tests (tests) where
 
 import SD.Utility.Streaming
 
+import Control.Monad.Except (ExceptT, runExceptT)
 import Data.ByteString (pack, unpack)
 import Data.ByteString.Streaming (fromChunks)
 import Data.List (intercalate)
 import Data.Word (Word8)
 import SD.Utility.Random (randomSplitList)
-import Streaming.Prelude (Of ((:>)), each, toList)
+import Streaming.Prelude (Of ((:>)), Stream, each, toList, toList_)
 import Test.QuickCheck.Monadic (monadicIO, pick, run)
 import Test.Tasty (TestTree)
+import Test.Tasty.HUnit (assertEqual, testCase)
 import Test.Tasty.QuickCheck (arbitrary, testProperty)
 
 --------------------------------------------------------------------------------
 
 tests :: [TestTree]
 tests =
-    [ testLines ]
+    [ testLines
+    , testTakeWhile
+    , testMapWhile ]
 
 --------------------------------------------------------------------------------
 
@@ -54,5 +58,29 @@ testLines = testProperty "streamLines" $ monadicIO $ do
     return $ if wordLists' == [[]]
               then wordLists'' == [] -- Special case.
               else wordLists' == wordLists''
+
+--------------------------------------------------------------------------------
+
+testTakeWhile :: TestTree
+testTakeWhile =
+    testCase "takeWhile" $ do
+        let stream = each [1..100]
+        let stream' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<50) show stream
+        let stream'' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<500) show stream
+        eRes' <- runExceptT $ toList_ stream'
+        assertEqual "Expected failure" eRes' (Left "50")
+        eRes'' <- runExceptT $ toList_ stream''
+        assertEqual "Expected success" eRes'' (Right [1..100])
+
+testMapWhile :: TestTree
+testMapWhile =
+    testCase "mapWhile" $ do
+        let stream = each [1..100]
+        let stream' :: Stream (Of Int) (ExceptT String IO) () = mapWhile (*2) (<50) show stream
+        let stream'' :: Stream (Of Int) (ExceptT String IO) () = mapWhile (*2) (<500) show stream
+        eRes' <- runExceptT $ toList_ stream'
+        assertEqual "Expected failure" eRes' (Left "25")
+        eRes'' <- runExceptT $ toList_ stream''
+        assertEqual "Expected success" eRes'' (Right [2,4..200])
 
 --------------------------------------------------------------------------------
