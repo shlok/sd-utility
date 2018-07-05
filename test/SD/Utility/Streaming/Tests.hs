@@ -27,8 +27,8 @@ import Test.Tasty.QuickCheck (arbitrary, testProperty)
 tests :: [TestTree]
 tests =
     [ testLines
-    , testTakeWhile
-    , testMapWhile ]
+    , testMapWhile
+    , testTakeWhile ]
 
 --------------------------------------------------------------------------------
 
@@ -61,17 +61,6 @@ testLines = testProperty "streamLines" $ monadicIO $ do
 
 --------------------------------------------------------------------------------
 
-testTakeWhile :: TestTree
-testTakeWhile =
-    testCase "takeWhile" $ do
-        let stream = each [1..100]
-        let stream' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<50) show stream
-        let stream'' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<500) show stream
-        eRes' <- runExceptT $ toList_ stream'
-        assertEqual "Expected failure" eRes' (Left "50")
-        eRes'' <- runExceptT $ toList_ stream''
-        assertEqual "Expected success" eRes'' (Right [1..100])
-
 testMapWhile :: TestTree
 testMapWhile =
     testCase "mapWhile" $ do
@@ -82,5 +71,16 @@ testMapWhile =
         assertEqual "Expected failure" eRes' (Left "25")
         eRes'' <- runExceptT $ toList_ stream''
         assertEqual "Expected success" eRes'' (Right [2,4..200])
+
+testTakeWhile :: TestTree
+testTakeWhile =
+    testCase "takeWhile" $ do
+        let stream = each [1..100]
+        let stream' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<50) show stream
+        let stream'' :: Stream (Of Int) (ExceptT String IO) () = takeWhile' (<500) show stream
+        eRes' <- runExceptT $ toList_ stream'
+        assertEqual "Expected failure" eRes' (Left "50")
+        eRes'' <- runExceptT $ toList_ stream''
+        assertEqual "Expected success" eRes'' (Right [1..100])
 
 --------------------------------------------------------------------------------

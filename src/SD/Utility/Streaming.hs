@@ -17,14 +17,6 @@ streamLines = (mapped SB.toStrict) . SB.splitWith (=='\n')
 
 --------------------------------------------------------------------------------
 
--- | Ends a stream when an element fails a condition. Throws a projection
--- of the failed element. The original return value is lost.
-takeWhile' :: (MonadError e m) => (a -> Bool) -> (a -> e) -> Stream (Of a) m r -> Stream (Of a) m ()
-takeWhile' p ae stream = S.takeWhileM predM stream
-    where predM a = if p a
-                     then return True
-                     else throwError $ ae a
-
 -- | Maps over a stream, ending it when a mapped element fails a condition.
 -- Throws a projection of the corresponding original (unmapped) element.
 -- The original return value is lost.
@@ -37,5 +29,10 @@ mapWhile mp p ae stream = S.map snd . S.takeWhileM predM $ S.map (\a -> (a, mp a
     where predM (a, b) = if p b
                           then return True
                           else throwError $ ae a
+
+-- | Ends a stream when an element fails a condition. Throws a projection
+-- of the failed element. The original return value is lost.
+takeWhile' :: (MonadError e m) => (a -> Bool) -> (a -> e) -> Stream (Of a) m r -> Stream (Of a) m ()
+takeWhile' = mapWhile id
 
 --------------------------------------------------------------------------------
