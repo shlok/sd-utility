@@ -13,6 +13,7 @@ module SD.Utility.MaxLengthSequence (
   , length
   , full
   , append
+  , sequ
   ) where
 
 --------------------------------------------------------------------------------
@@ -57,5 +58,9 @@ append a s @ (MLSeq { elemsSeq = currSeq @ (_ :<| currSeqTail) }) =
      then s { elemsSeq = currSeqTail |> a }
      else s { elemsSeq = currSeq |> a }
 {-# INLINE append #-}
+
+sequ :: MLSeq a -> Seq a
+sequ = elemsSeq
+{-# INLINE sequ #-}
 
 --------------------------------------------------------------------------------
