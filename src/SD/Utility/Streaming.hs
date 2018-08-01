@@ -1,13 +1,27 @@
 --------------------------------------------------------------------------------
 
-module SD.Utility.Streaming where
+{-# LANGUAGE BangPatterns #-}
+
+--------------------------------------------------------------------------------
+
+module SD.Utility.Streaming (
+    streamLines
+  , mapWhile
+  , takeWhile'
+  , slidingWindow'
+  ) where
 
 --------------------------------------------------------------------------------
 
 import Control.Monad.Except (MonadError, throwError)
+import Control.Monad.Trans (lift)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Streaming.Char8 as SB (ByteString, splitWith, toStrict)
-import Streaming.Prelude (Of, Stream, mapped)
+import Data.Maybe (fromJust)
+import Data.Sequence (Seq((:<|), Empty))
+import SD.Utility.MaxLengthSequence (sequ)
+import qualified SD.Utility.MaxLengthSequence as MLSeq (append, empty)
+import Streaming.Prelude (Of, Stream, mapped, next, yield)
 import qualified Streaming.Prelude as S (map, takeWhileM)
 
 --------------------------------------------------------------------------------
@@ -34,5 +48,35 @@ mapWhile mp p ae stream = S.map snd . S.takeWhileM predM $ S.map (\a -> (a, mp a
 -- of the failed element. The original return value is lost.
 takeWhile' :: (MonadError e m) => (a -> Bool) -> (a -> e) -> Stream (Of a) m r -> Stream (Of a) m ()
 takeWhile' = mapWhile id
+
+--------------------------------------------------------------------------------
+
+-- | Just like the built-in @slidingWindow@, except that sequences shorter
+-- than the window at the beginning and end of the stream are included.
+--
+-- > > import qualified Streaming.Prelude as S
+-- > > S.print $ slidingWindow' 3 $ S.each ("1234" :: String)
+-- > fromList "1"
+-- > fromList "12"
+-- > fromList "123"
+-- > fromList "234"
+-- > fromList "34"
+-- > fromList "4"
+slidingWindow' :: (Monad m) => Int -> Stream (Of a) m r -> Stream (Of (Seq a)) m r
+slidingWindow' n str = go (fromJust $ MLSeq.empty (max 1 n)) str
+    where
+        go !mlSeq str' = do
+            e <- lift (next str')
+            case e of
+                Left r -> yieldRem r (sequ mlSeq)
+                Right (a, rest) -> let mlSeq' = MLSeq.append a mlSeq
+                                    in yield (sequ mlSeq') >> go mlSeq' rest
+{-# INLINABLE slidingWindow' #-}
+
+yieldRem :: (Monad m) => r -> Seq a -> Stream (Of (Seq a)) m r
+yieldRem r Empty = return r
+yieldRem r (_ :<| Empty) = return r
+yieldRem r (_ :<| end) = yield end >> yieldRem r end
+{-# INLINABLE yieldRem #-}
 
 --------------------------------------------------------------------------------
