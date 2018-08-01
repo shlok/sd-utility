@@ -101,13 +101,11 @@ testSlidingWindow_1 = testProperty "slidingWindow (1)" $ monadicIO $ do
 
 testSlidingWindow_2 :: TestTree
 testSlidingWindow_2 = testProperty "slidingWindow (2)" $ monadicIO $ do
-    -- A sliding window on a non-empty finite stream should always result in a specific number of sequences.
-    -- (When looking at a few examples one will quickly spot the formula.)
+    -- A sliding window on a non-empty finite stream should always result in the same number of sequences.
     n :: Int <- pick arbitrary
-    let n' = if n < 1 then 1 else n -- 1 is the minimum window length.
     NonEmpty (list :: [Double]) <- pick arbitrary
     seqs <- run . toList_ $ slidingWindow' n (each list)
-    return $ length seqs == length list + min (length list) n' - 1
+    return $ length seqs == length list
 
 testSlidingWindow_3 :: TestTree
 testSlidingWindow_3 = testProperty "slidingWindow (3)" $ monadicIO $ do
@@ -120,19 +118,17 @@ testSlidingWindow_4 :: TestTree
 testSlidingWindow_4 =
     testCase "slidingWindow (4)" $ do
         let list :: [Double] = [1, 2, 3, 4]
-        
+
         -- Sequences resulting from various window lengths.
         [seqs1, seqs2, seqs3, seqs4, seqs5, seqs6, seqs60]
             <- mapM toList_ $ map ((flip slidingWindow') (each list)) [1, 2, 3, 4, 5, 6, 60]
-        
+
         -- Expected sequences.
         let seqs1e = map singleton [1, 2, 3, 4]
-        let seqs2e = [ singleton 1, fromList [1, 2], fromList [2, 3], fromList [3, 4], singleton 4]
-        let seqs3e = [ singleton 1, fromList [1, 2], fromList [1, 2, 3],
-                       fromList [2, 3, 4], fromList [3, 4], singleton 4]
-        let seqs4e = [ singleton 1, fromList [1, 2], fromList [1, 2, 3], fromList [1, 2, 3, 4],
-                       fromList [2, 3, 4], fromList [3, 4], singleton 4 ]
-        
+        let seqs2e = [ fromList [1, 2], fromList [2, 3], fromList [3, 4], singleton 4]
+        let seqs3e = [ fromList [1, 2, 3], fromList [2, 3, 4], fromList [3, 4], singleton 4]
+        let seqs4e = [ fromList [1, 2, 3, 4], fromList [2, 3, 4], fromList [3, 4], singleton 4 ]
+
         assertEqual "" seqs1 seqs1e
         assertEqual "" seqs2 seqs2e
         assertEqual "" seqs3 seqs3e
