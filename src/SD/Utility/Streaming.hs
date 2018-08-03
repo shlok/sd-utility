@@ -13,17 +13,13 @@ module SD.Utility.Streaming (
 
 --------------------------------------------------------------------------------
 
-import Control.Monad (when)
 import Control.Monad.Except (MonadError, throwError)
-import Control.Monad.Trans (lift)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Streaming.Char8 as SB (ByteString, splitWith, toStrict)
-import Data.Maybe (fromJust)
 import Data.Sequence (Seq((:<|), Empty))
-import SD.Utility.MaxLengthSequence (sequ)
-import qualified SD.Utility.MaxLengthSequence as MLSeq (append, empty, full, length)
-import Streaming.Prelude (Of, Stream, mapped, next, yield)
-import qualified Streaming.Prelude as S (map, takeWhileM)
+import qualified Data.Sequence as Seq (length)
+import Streaming.Prelude (Of ((:>)), Stream, copy, mapped, slidingWindow, yield)
+import qualified Streaming.Prelude as S (filter, last, map, takeWhileM)
 
 --------------------------------------------------------------------------------
 
@@ -63,19 +59,11 @@ takeWhile' = mapWhile id
 -- > fromList "34"
 -- > fromList "4"
 slidingWindow' :: (Monad m) => Int -> Stream (Of a) m r -> Stream (Of (Seq a)) m r
-slidingWindow' n str = go (fromJust $ MLSeq.empty (max 1 n)) False str
-    where
-        go !mlSeq !full !str' = do
-            e <- lift (next str')
-            case e of
-                Left r -> do
-                    when (not full && MLSeq.length mlSeq > 0) (yield $ sequ mlSeq)
-                    yieldRem r (sequ mlSeq)
-                Right (a, rest) -> do
-                    let mlSeq' = MLSeq.append a mlSeq
-                        full' = MLSeq.full mlSeq'
-                    when full' (yield $ sequ mlSeq')
-                    go mlSeq' full' rest
+slidingWindow' n str = do
+    mLastSequ :> r <- S.last . copy . S.filter (\sequ -> Seq.length sequ /= 0) $ slidingWindow n str
+    case mLastSequ of
+        Nothing -> return r
+        Just lastSequ -> yieldRem r lastSequ
 {-# INLINABLE slidingWindow' #-}
 
 yieldRem :: (Monad m) => r -> Seq a -> Stream (Of (Seq a)) m r
