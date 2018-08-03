@@ -19,7 +19,7 @@ import qualified Data.Sequence as Seq (length)
 import Data.Word (Word8)
 import SD.Utility.Random (randomSplitList)
 import Streaming.Prelude (Of ((:>)), Stream, each, toList, toList_, yield)
-import Test.QuickCheck (NonEmptyList (NonEmpty))
+import Test.QuickCheck (NonEmptyList (NonEmpty), Positive (Positive))
 import Test.QuickCheck.Monadic (monadicIO, pick, run)
 import Test.Tasty (TestTree)
 import Test.Tasty.HUnit (assertEqual, testCase)
@@ -35,7 +35,8 @@ tests =
     , testSlidingWindow_1
     , testSlidingWindow_2
     , testSlidingWindow_3
-    , testSlidingWindow_4 ]
+    , testSlidingWindow_4
+    , testSlidingWindow_5 ]
 
 --------------------------------------------------------------------------------
 
@@ -115,8 +116,18 @@ testSlidingWindow_3 = testProperty "slidingWindow (3)" $ monadicIO $ do
     return $ length seqs == 1 && Seq.length (seqs !! 0) == 1 && (seqs !! 0) `index` 0 == a
 
 testSlidingWindow_4 :: TestTree
-testSlidingWindow_4 =
-    testCase "slidingWindow (4)" $ do
+testSlidingWindow_4 = testProperty "slidingWindow (4)" $ monadicIO $ do
+    -- A sliding window of length 1 should always give us back the same elements.
+    Positive (x :: Int) <- pick arbitrary
+    let n = negate x + 2 -- n < 2. (Lengths less than 1 should be treated as 1.)
+    list :: [Double] <- pick arbitrary
+    seqs <- run . toList_ $ slidingWindow' n (each list)
+    return $ length list == length seqs
+                 && all (\(a, sequ) -> Seq.length sequ == 1 && a == sequ `index` 0) (zip list seqs)
+
+testSlidingWindow_5 :: TestTree
+testSlidingWindow_5 =
+    testCase "slidingWindow (5)" $ do
         let list :: [Double] = [1, 2, 3, 4]
 
         -- Sequences resulting from various window lengths.
