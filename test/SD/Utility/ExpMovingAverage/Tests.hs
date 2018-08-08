@@ -2,9 +2,12 @@
 
 {-# LANGUAGE ScopedTypeVariables, TypeApplications #-}
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-module SD.Utility.ExpMovingAverage.Tests (tests) where
+module SD.Utility.ExpMovingAverage.Tests (
+    tests
+  , naiveEMA
+  ) where
 
 --------------------------------------------------------------------------------
 
@@ -27,24 +30,23 @@ tests =
 
 --------------------------------------------------------------------------------
 
-testEMA :: forall f . (Arbitrary f, Ord f, Show f, Fractional f) => f -> String -> TestTree 
+testEMA :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> String -> TestTree
 testEMA eps desc = testProperty desc $ monadicIO $ do
     Positive (emaCount :: Int) <- pick arbitrary
     let emptyEMA = fromJust $ EMA.empty emaCount
     elements :: [f] <- pick arbitrary
-    let ema = foldl' (flip EMA.append) emptyEMA elements
-    let elemsLen = length elements
-    case elemsLen of
-        n | n == 0 || n < emaCount -> return . isNothing $ lookupEMA ema
+    let mEma = lookupEMA $ foldl' (flip EMA.append) emptyEMA elements
+    case length elements of
+        n | n == 0 || n < emaCount -> return . isNothing $ mEma
         _ -> return $ areClose eps
-                               (fromJust $ lookupEMA ema)
-                               (calculateEma emaCount elements)
+                               (fromJust mEma)
+                               (naiveEMA emaCount elements)
 
 areClose :: (Num a, Ord a) => a -> a -> a -> Bool
 areClose eps x y = abs (x - y) < eps
 
-calculateEma :: (Fractional f) => Int -> [f] -> f
-calculateEma emaCount elements =
+naiveEMA :: (Fractional f) => Int -> [f] -> f
+naiveEMA emaCount elements =
     let (firstElems, otherElems) = splitAt emaCount elements
         ma = sum firstElems / fromIntegral emaCount
         k = 2 / (fromIntegral emaCount + 1)
