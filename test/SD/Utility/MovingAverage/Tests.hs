@@ -2,7 +2,7 @@
 
 {-# LANGUAGE ScopedTypeVariables, TypeApplications #-}
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 module SD.Utility.MovingAverage.Tests (tests) where
 

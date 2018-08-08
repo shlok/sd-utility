@@ -2,7 +2,7 @@
 
 {-# LANGUAGE AllowAmbiguousTypes, ScopedTypeVariables, TypeApplications #-}
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 module SD.Utility.MinMaxSequence.Tests (tests) where
 
