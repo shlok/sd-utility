@@ -4,6 +4,7 @@ module Main where
 
 --------------------------------------------------------------------------------
 
+import qualified SD.Utility.AverageTrueRange.Tests
 import qualified SD.Utility.Calendar.Tests
 import qualified SD.Utility.Exception.Tests
 import qualified SD.Utility.ExpMovingAverage.Tests
@@ -25,7 +26,9 @@ main = defaultMain tests
 tests :: TestTree
 tests =
     testGroup "Tests"
-        [ testGroup "SD.Utility.Calendar.Tests"
+        [ testGroup "SD.Utility.AverageTrueRange.Tests"
+                     SD.Utility.AverageTrueRange.Tests.tests,
+          testGroup "SD.Utility.Calendar.Tests"
                      SD.Utility.Calendar.Tests.tests,
           testGroup "SD.Utility.ExpMovingAverage.Tests"
                      SD.Utility.ExpMovingAverage.Tests.tests,

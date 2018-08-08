@@ -26,6 +26,7 @@ library:
   - OverloadedStrings
   ghc-options: -Wall
   exposed-modules:
+  - SD.Utility.AverageTrueRange
   - SD.Utility.Either
   - SD.Utility.Calendar
   - SD.Utility.ExpMovingAverage
