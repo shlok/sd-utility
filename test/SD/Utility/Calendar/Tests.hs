@@ -61,7 +61,8 @@ newtype MyDay = MyDay { toDay :: Day } deriving (Show)
 dayGen :: Gen MyDay
 dayGen = do
     y <- arbitrary
-    [m,d] <- sequence $ replicate 2 arbitrary
+    m <- arbitrary
+    d <- arbitrary
     return . MyDay $ fromGregorian y m d
 
 instance Arbitrary MyDay where
