@@ -5,6 +5,7 @@ module Main where
 --------------------------------------------------------------------------------
 
 import qualified Data.Serialize.Tests
+import qualified Data.Store.Tests
 import qualified SD.Utility.AverageTrueRange.Tests
 import qualified SD.Utility.Calendar.Tests
 import qualified SD.Utility.Exception.Tests
@@ -29,6 +30,8 @@ tests =
     testGroup "Tests"
         [ testGroup "Data.Serialize.Tests"
                      Data.Serialize.Tests.tests,
+          testGroup "Data.Store.Tests"
+                     Data.Store.Tests.tests,
           testGroup "SD.Utility.AverageTrueRange.Tests"
                      SD.Utility.AverageTrueRange.Tests.tests,
           testGroup "SD.Utility.Calendar.Tests"

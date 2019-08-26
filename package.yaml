@@ -14,9 +14,11 @@ dependencies:
 - bytestring
 - cereal
 - containers
+- cpu
 - mtl
 - random
 - scientific
+- store
 - streaming
 - streaming-bytestring
 - time
