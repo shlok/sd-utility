@@ -14,7 +14,7 @@ module SD.Utility.ExpMovingAverage.Tests (
 import SD.Utility.ExpMovingAverage (lookupEMA)
 import qualified SD.Utility.ExpMovingAverage as EMA (empty, append)
 
-import Data.List (foldl', splitAt)
+import Data.List (foldl')
 import Data.Maybe (fromJust, isNothing)
 import Test.QuickCheck (Positive (Positive))
 import Test.QuickCheck.Monadic (monadicIO, pick)

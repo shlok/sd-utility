@@ -12,7 +12,6 @@ import SD.Utility.Exception
 
 import Control.Exception (ArithException (Overflow), SomeException, throw, try)
 import Data.Either (lefts)
-import System.IO (readFile)
 import System.IO.Error (isDoesNotExistError)
 import Test.Tasty (TestTree)
 import Test.Tasty.HUnit (assertBool, testCase)

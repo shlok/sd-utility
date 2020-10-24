@@ -9,7 +9,7 @@ module SD.Utility.IO where
 --------------------------------------------------------------------------------
 
 import Control.Exception (SomeException, catch)
-import System.IO (FilePath, Handle, IOMode)
+import System.IO (Handle, IOMode)
 import System.IO as S (hClose, openFile)
 
 --------------------------------------------------------------------------------
