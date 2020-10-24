@@ -1,4 +1,4 @@
-resolver: lts-16.15
+resolver: lts-16.19
 extra-deps:
 - store-0.7.7@sha256:8855feafa52b623f280d9a6b7abea36b7e9eec3cd68db4d476a5b1ece125a92a,8001
 - store-core-0.4.4.3@sha256:50b3ef13ab5f82cccf665bd29edf37f69ef1e94c22802c2c94d0f74ce8808f09,1430

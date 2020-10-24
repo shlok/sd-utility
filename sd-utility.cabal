@@ -1,0 +1,101 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 0d75ecf13f2484899011dc12e0d156a9b6caa7ce094d61840bf16de2e63dbdba
+
+name:           sd-utility
+version:        0.1.0.0
+synopsis:       Initial project template from stack
+description:    Please see README.md
+category:       Web
+homepage:       https://github.com/shlok/sd-utility#readme
+bug-reports:    https://github.com/shlok/sd-utility/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2016 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/shlok/sd-utility
+
+library
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , cereal
+    , containers
+    , cpu
+    , mtl
+    , random
+    , scientific
+    , store
+    , streaming
+    , streaming-bytestring
+    , time
+  exposed-modules:
+      SD.Utility.AverageTrueRange
+      SD.Utility.Either
+      SD.Utility.Calendar
+      SD.Utility.ExpMovingAverage
+      SD.Utility.Exception
+      SD.Utility.IO
+      SD.Utility.MaxLengthSequence
+      SD.Utility.MinMaxSequence
+      SD.Utility.MovingAverage
+      SD.Utility.Random
+      SD.Utility.Read
+      SD.Utility.Scientific
+      SD.Utility.Streaming
+  other-modules:
+      Paths_sd_utility
+  default-language: Haskell2010
+
+test-suite sd-utility-test
+  type: exitcode-stdio-1.0
+  main-is: TestSuite.hs
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , bytestring
+    , cereal
+    , containers
+    , cpu
+    , mtl
+    , random
+    , scientific
+    , sd-utility
+    , store
+    , streaming
+    , streaming-bytestring
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , time
+  other-modules:
+      Data.Serialize.Tests
+      Data.Store.Tests
+      SD.Utility.AverageTrueRange.Tests
+      SD.Utility.Calendar.Tests
+      SD.Utility.Exception.Tests
+      SD.Utility.ExpMovingAverage.Tests
+      SD.Utility.IO.Tests
+      SD.Utility.MaxLengthSequence.Tests
+      SD.Utility.MinMaxSequence.Tests
+      SD.Utility.MovingAverage.Tests
+      SD.Utility.Read.Tests
+      SD.Utility.Scientific.Tests
+      SD.Utility.Streaming.Tests
+      Paths_sd_utility
+  default-language: Haskell2010
