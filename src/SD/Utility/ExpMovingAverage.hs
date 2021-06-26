@@ -33,7 +33,7 @@ append :: (Fractional a) => a -> EMA a -> EMA a
 append a m =
     if currCount m < count m
      then m { currCount = currCount m + 1
-            , currEMA = currEMA m + a / (fromIntegral $ count m) }
+            , currEMA = currEMA m + a / fromIntegral (count m) }
      else m { currEMA = currEMA m * (1 - k m) + a * k m }
 
 lookupEMA :: EMA a -> Maybe a

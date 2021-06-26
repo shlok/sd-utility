@@ -55,10 +55,10 @@ append a s =
                 , elemsMap = insert' a currMap }
 
 lookupMin :: MMSeq a -> Maybe a
-lookupMin s = fst <$> (Map.lookupMin $ elemsMap s)
+lookupMin s = fst <$> Map.lookupMin (elemsMap s)
 
 lookupMax :: MMSeq a -> Maybe a
-lookupMax s = fst <$> (Map.lookupMax $ elemsMap s)
+lookupMax s = fst <$> Map.lookupMax (elemsMap s)
 
 lookupFullMin :: MMSeq a -> Maybe a
 lookupFullMin s = do

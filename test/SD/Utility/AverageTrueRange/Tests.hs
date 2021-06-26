@@ -23,25 +23,30 @@ import Test.Tasty.QuickCheck (Arbitrary, arbitrary, testProperty)
 
 tests :: [TestTree]
 tests =
-    [ testATR @Double 0.01 "averageTrueRange (Double)"
-    , testATR @Float  0.1  "averageTrueRange (Float)" ]
+    [ testATR @Double 1e-8 1e-8 "averageTrueRange (Double)"
+    , testATR @Float  1e-2 1e-2  "averageTrueRange (Float)"
+    , testATR @Rational  1e-800 1e-800  "averageTrueRange (Rational)" ]
 
 --------------------------------------------------------------------------------
 
-testATR :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> String -> TestTree
-testATR eps desc = testProperty desc $ monadicIO $ do
+testATR :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> f -> String -> TestTree
+testATR eps0 eps1 desc = testProperty desc $ monadicIO $ do
     Positive (atrCount :: Int) <- pick arbitrary
     let emptyATR = fromJust $ ATR.empty atrCount
     elements :: [(f, f, f)] <- pick arbitrary
     let mAtr = lookupATR $ foldl' (flip ATR.append) emptyATR elements
     case length elements of
         n | n == 0 || n <= atrCount -> return . isNothing $ mAtr
-        _ -> return $ areClose eps
-                               (fromJust $ mAtr)
+        _ -> return $ areClose eps0 eps1
+                               (fromJust mAtr)
                                (naiveATR atrCount elements)
 
-areClose :: (Num a, Ord a) => a -> a -> a -> Bool
-areClose eps x y = abs (x - y) < eps
+areClose :: (Ord f, Fractional f) => f -> f -> f -> f -> Bool
+areClose eps0 eps1 x y =
+    let d = abs (x - y)
+    in (x == 0 && d < eps0)
+        || (y == 0 && d < eps0)
+        || (x /= 0 && y /= 0 && d / x < eps1 && d / y < eps1)
 
 naiveATR :: (Fractional f, Ord f) => Int -> [(f, f, f)] -> f
 naiveATR atrCount elements =

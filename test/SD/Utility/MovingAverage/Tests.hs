@@ -22,13 +22,14 @@ import Test.Tasty.QuickCheck (Arbitrary, arbitrary, testProperty)
 
 tests :: [TestTree]
 tests =
-    [ testMovingAvg @Double 0.01 "movingAvg (Double)"
-    , testMovingAvg @Float  0.1  "movingAvg (Float)" ]
+    [ testMovingAvg @Double 1e-8 1e-8 "movingAvg (Double)"
+    , testMovingAvg @Float  1e-2 1e-2  "movingAvg (Float)"
+    , testMovingAvg @Rational  1e-800 1e-800  "movingAvg (Rational)" ]
 
 --------------------------------------------------------------------------------
 
-testMovingAvg :: forall f . (Arbitrary f, Ord f, Show f, Fractional f) => f -> String -> TestTree 
-testMovingAvg eps desc = testProperty desc $ monadicIO $ do
+testMovingAvg :: forall f . (Arbitrary f, Ord f, Show f, Fractional f) => f -> f -> String -> TestTree
+testMovingAvg eps0 eps1 desc = testProperty desc $ monadicIO $ do
     Positive (movingAvgCount :: Int) <- pick arbitrary
     let emptyMovingAvg = fromJust $ MovingAvg.empty movingAvgCount
     elements :: [f] <- pick arbitrary
@@ -36,12 +37,16 @@ testMovingAvg eps desc = testProperty desc $ monadicIO $ do
     let elemsLen = length elements
     case elemsLen of
         n | n == 0 || n < movingAvgCount -> return . isNothing $ lookupMA movingAvg
-        _ -> return $ areClose eps
+        _ -> return $ areClose eps0 eps1
                                (fromJust $ lookupMA movingAvg)
                                (sum (lastElems movingAvgCount elements) / fromIntegral movingAvgCount)
 
-areClose :: (Num a, Ord a) => a -> a -> a -> Bool
-areClose eps x y = abs (x - y) < eps
+areClose :: (Ord f, Fractional f) => f -> f -> f -> f -> Bool
+areClose eps0 eps1 x y =
+    let d = abs (x - y)
+    in (x == 0 && d < eps0)
+        || (y == 0 && d < eps0)
+        || (x /= 0 && y /= 0 && d / x < eps1 && d / y < eps1)
 
 lastElems :: Int -> [a] -> [a]
 lastElems n l = drop (length l - n) l

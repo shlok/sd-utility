@@ -21,13 +21,16 @@ import Test.Tasty.QuickCheck (Arbitrary, arbitrary, testProperty)
 
 tests :: [TestTree]
 tests =
-    [ testMinMax @Double "minMax (Double)"
-    , testMinMax @Float  "minMax (Float)"
-    , testMinMax @Int    "minMax (Int)" ]
+    [ testMinMax @Double   "minMax (Double)"
+    , testMinMax @Float    "minMax (Float)"
+    , testMinMax @Int      "minMax (Int)"
+    , testMinMax @Integer  "minMax (Integer)"
+    , testMinMax @Rational "minMax (Rational)"
+    , testMinMax @String   "minMax (String)" ]
 
 --------------------------------------------------------------------------------
 
-testMinMax :: forall f . (Arbitrary f, Ord f, Show f) => String -> TestTree 
+testMinMax :: forall f . (Arbitrary f, Ord f, Show f) => String -> TestTree
 testMinMax desc = testProperty desc $ monadicIO $ do
     Positive (mmSeqMaxLen :: Int) <- pick arbitrary
     let emptyMmSeq = fromJust $ MMSeq.empty mmSeqMaxLen

@@ -25,25 +25,30 @@ import Test.Tasty.QuickCheck (Arbitrary, arbitrary, testProperty)
 
 tests :: [TestTree]
 tests =
-    [ testEMA @Double 0.01 "expMovingAvg (Double)"
-    , testEMA @Float  0.1  "expMovingAvg (Float)" ]
+    [ testEMA @Double 1e-8 1e-8 "expMovingAvg (Double)"
+    , testEMA @Float  1e-2 1e-2 "expMovingAvg (Float)"
+    , testEMA @Rational 1e-800 1e-800 "expMovingAvg (Rational)" ]
 
 --------------------------------------------------------------------------------
 
-testEMA :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> String -> TestTree
-testEMA eps desc = testProperty desc $ monadicIO $ do
+testEMA :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> f -> String -> TestTree
+testEMA eps0 eps1 desc = testProperty desc $ monadicIO $ do
     Positive (emaCount :: Int) <- pick arbitrary
     let emptyEMA = fromJust $ EMA.empty emaCount
     elements :: [f] <- pick arbitrary
     let mEma = lookupEMA $ foldl' (flip EMA.append) emptyEMA elements
     case length elements of
         n | n == 0 || n < emaCount -> return . isNothing $ mEma
-        _ -> return $ areClose eps
+        _ -> return $ areClose eps0 eps1
                                (fromJust mEma)
                                (naiveEMA emaCount elements)
 
-areClose :: (Num a, Ord a) => a -> a -> a -> Bool
-areClose eps x y = abs (x - y) < eps
+areClose :: (Ord f, Fractional f) => f -> f -> f -> f -> Bool
+areClose eps0 eps1 x y =
+    let d = abs (x - y)
+    in (x == 0 && d < eps0)
+        || (y == 0 && d < eps0)
+        || (x /= 0 && y /= 0 && d / x < eps1 && d / y < eps1)
 
 naiveEMA :: (Fractional f) => Int -> [f] -> f
 naiveEMA emaCount elements =

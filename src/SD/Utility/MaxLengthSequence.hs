@@ -39,8 +39,8 @@ empty n
 {-# INLINE empty #-}
 
 head :: MLSeq a -> Maybe a
-head (MLSeq { elemsSeq = Empty }) = Nothing
-head (MLSeq { elemsSeq = head' :<| _ }) = Just head'
+head MLSeq { elemsSeq = Empty } = Nothing
+head MLSeq { elemsSeq = head' :<| _ } = Just head'
 {-# INLINE head #-}
 
 length :: MLSeq a -> Int
@@ -52,8 +52,8 @@ full s = maxLength s == length s
 {-# INLINE full #-}
 
 append :: a -> MLSeq a -> MLSeq a
-append a s @ (MLSeq { elemsSeq = Empty }) = s { elemsSeq = singleton a }
-append a s @ (MLSeq { elemsSeq = currSeq @ (_ :<| currSeqTail) }) =
+append a s @ MLSeq { elemsSeq = Empty } = s { elemsSeq = singleton a }
+append a s @ MLSeq { elemsSeq = currSeq @ (_ :<| currSeqTail) } =
     if full s
      then s { elemsSeq = currSeqTail |> a }
      else s { elemsSeq = currSeq |> a }
