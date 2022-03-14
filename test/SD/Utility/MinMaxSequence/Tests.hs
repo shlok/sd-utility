@@ -8,6 +8,7 @@ module SD.Utility.MinMaxSequence.Tests (tests) where
 
 --------------------------------------------------------------------------------
 
+import SD.Utility.MinMaxSequence (MMSeqSetting (..))
 import qualified SD.Utility.MinMaxSequence as MMSeq
 
 import Data.List (foldl')
@@ -33,13 +34,15 @@ tests =
 testMinMax :: forall f . (Arbitrary f, Ord f, Show f) => String -> TestTree
 testMinMax desc = testProperty desc $ monadicIO $ do
     Positive (mmSeqMaxLen :: Int) <- pick arbitrary
-    let emptyMmSeq = fromJust $ MMSeq.empty mmSeqMaxLen
+    let emptyMmSeqMin = fromJust $ MMSeq.empty mmSeqMaxLen MMSeqMin
+    let emptyMmSeqMax = fromJust $ MMSeq.empty mmSeqMaxLen MMSeqMax
     elements :: [f] <- pick arbitrary
-    let mmSeq = foldl' (flip MMSeq.append) emptyMmSeq elements
-    let min' = MMSeq.lookupMin mmSeq
-    let max' = MMSeq.lookupMax mmSeq
-    let fullMin = MMSeq.lookupFullMin mmSeq
-    let fullMax = MMSeq.lookupFullMax mmSeq
+    let mmSeqMin = foldl' (flip MMSeq.append) emptyMmSeqMin elements
+    let mmSeqMax = foldl' (flip MMSeq.append) emptyMmSeqMax elements
+    let min' = MMSeq.lookupValue mmSeqMin
+    let max' = MMSeq.lookupValue mmSeqMax
+    let fullMin = MMSeq.lookupFullValue mmSeqMin
+    let fullMax = MMSeq.lookupFullValue mmSeqMax
     case length elements of
         0 -> return $ all isNothing [min', max', fullMin, fullMax]
         n | n < mmSeqMaxLen -> return $    fromJust min' == minimum elements

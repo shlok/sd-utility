@@ -2,6 +2,7 @@
 
 import Data.List (foldl')
 import Data.Maybe (fromJust)
+import SD.Utility.MinMaxSequence (MMSeqSetting (..))
 import qualified SD.Utility.MinMaxSequence as MMSeq
 import System.IO (hFlush, stdout)
 import System.Random (mkStdGen, randoms)
@@ -19,9 +20,9 @@ timeMinMaxSequence = do
         foldl'
           ( \(sequ, sum') x ->
               let sequ' = MMSeq.append x sequ
-                  max' = fromJust $ MMSeq.lookupMax sequ'
+                  max' = fromJust $ MMSeq.lookupValue sequ'
                in (sequ', sum' + max')
           )
-          (fromJust $ MMSeq.empty seqLen, 0 :: Int)
+          (fromJust $ MMSeq.empty seqLen MMSeqMax, 0 :: Int)
           (take numRandom $ randoms (mkStdGen 0) :: [Int])
   putStrLn $ "done; sum of max values: " ++ show (snd result)

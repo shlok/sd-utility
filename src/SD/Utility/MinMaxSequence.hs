@@ -1,15 +1,14 @@
 -- | The @'MMSeq' a@ type represents a sequence with a given maximum
 -- length. Appending to an already full 'MMSeq' results in an element
 -- first getting removed from the front. 'MMSeq' has support for fast
--- querying of the minimum and maximum values.
+-- querying of the minimum or maximum value.
 module SD.Utility.MinMaxSequence
   ( MMSeq (),
+    MMSeqSetting (..),
     empty,
     append,
-    lookupMin,
-    lookupMax,
-    lookupFullMin,
-    lookupFullMax,
+    lookupValue,
+    lookupFullValue,
   )
 where
 
@@ -19,27 +18,29 @@ import qualified Data.Sequence as Seq
 import SD.Utility.MaxLengthSequence (MLSeq, full)
 import qualified SD.Utility.MaxLengthSequence as MLSeq (append, empty)
 
+data MMSeqSetting = MMSeqMin | MMSeqMax
+
 data MMSeq a = MMSeq
   { -- The element index is required for correct removal from the front;
     -- see https://www.geeksforgeeks.org/sliding-window-maximum-maximum-of-all-subarrays-of-size-k/
     mlSeq :: !(MLSeq (a, Int)),
     mlSeqLen :: !Int,
+    setting :: !MMSeqSetting,
     lastIndex :: !Int,
-    maxSeq :: !(Seq (a, Int)),
-    minSeq :: !(Seq (a, Int))
+    sequ :: !(Seq (a, Int))
   }
 
 -- | Please provide a positive maximum length. (Returns 'Nothing' otherwise.)
-empty :: Int -> Maybe (MMSeq a)
-empty n = do
+empty :: Int -> MMSeqSetting -> Maybe (MMSeq a)
+empty n sett = do
   mls <- MLSeq.empty n
   return $
     MMSeq
       { mlSeq = mls,
         mlSeqLen = n,
+        setting = sett,
         lastIndex = -1,
-        maxSeq = Seq.empty,
-        minSeq = Seq.empty
+        sequ = Seq.empty
       }
 
 append :: (Ord a) => a -> MMSeq a -> MMSeq a
@@ -48,9 +49,9 @@ append
   s@MMSeq
     { mlSeq = currSeq,
       mlSeqLen = mlSeqLen', -- Constant.
+      setting = sett, -- Constant.
       lastIndex = lastIdx,
-      maxSeq = currMaxSeq,
-      minSeq = currMinSeq
+      sequ = currSequ
     } =
     let newIdx = lastIdx + 1
         newSeq = MLSeq.append (a, newIdx) currSeq
@@ -59,15 +60,13 @@ append
             s
               { mlSeq = newSeq,
                 lastIndex = newIdx,
-                maxSeq = cleanBack True a (cleanFront newIdx mlSeqLen' currMaxSeq) |> (a, newIdx),
-                minSeq = cleanBack False a (cleanFront newIdx mlSeqLen' currMinSeq) |> (a, newIdx)
+                sequ = cleanBack sett a (cleanFront newIdx mlSeqLen' currSequ) |> (a, newIdx)
               }
           else
             s
               { mlSeq = newSeq,
                 lastIndex = newIdx,
-                maxSeq = cleanBack True a currMaxSeq |> (a, newIdx),
-                minSeq = cleanBack False a currMinSeq |> (a, newIdx)
+                sequ = cleanBack sett a currSequ |> (a, newIdx)
               }
 
 {-# INLINE cleanFront #-}
@@ -75,23 +74,22 @@ cleanFront :: Int -> Int -> Seq (a, Int) -> Seq (a, Int)
 cleanFront newIdx mlSeqLen' = Seq.dropWhileL (\(_, idx) -> idx <= newIdx - mlSeqLen')
 
 {-# INLINE cleanBack #-}
-cleanBack :: (Ord a) => Bool -> a -> Seq (a, Int) -> Seq (a, Int)
-cleanBack useMax a = Seq.dropWhileR (\(a', _) -> if useMax then a' <= a else a' >= a)
+cleanBack :: (Ord a) => MMSeqSetting -> a -> Seq (a, Int) -> Seq (a, Int)
+cleanBack set a =
+  Seq.dropWhileR
+    ( \(a', _) ->
+        case set of
+          MMSeqMin -> a' >= a
+          MMSeqMax -> a' <= a
+    )
 
-lookupMin :: MMSeq a -> Maybe a
-lookupMin MMSeq {minSeq = Empty} = Nothing
-lookupMin MMSeq {minSeq = head' :<| _} = Just $ fst head'
+{-# INLINE lookupValue #-}
+lookupValue :: MMSeq a -> Maybe a
+lookupValue MMSeq {sequ = Empty} = Nothing
+lookupValue MMSeq {sequ = head' :<| _} = Just $ fst head'
 
-lookupMax :: MMSeq a -> Maybe a
-lookupMax MMSeq {maxSeq = Empty} = Nothing
-lookupMax MMSeq {maxSeq = head' :<| _} = Just $ fst head'
-
-lookupFullMin :: MMSeq a -> Maybe a
-lookupFullMin s = do
+{-# INLINE lookupFullValue #-}
+lookupFullValue :: MMSeq a -> Maybe a
+lookupFullValue s = do
   guard . full $ mlSeq s
-  lookupMin s
-
-lookupFullMax :: MMSeq a -> Maybe a
-lookupFullMax s = do
-  guard . full $ mlSeq s
-  lookupMax s
+  lookupValue s
