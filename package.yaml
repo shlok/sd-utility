@@ -23,6 +23,19 @@ dependencies:
 - streaming-bytestring
 - time
 
+executables:
+  sd-utility-exe:
+    source-dirs: app
+    main: Main.hs
+    ghc-options:
+    - -O2
+    - -Wall
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sd-utility
+
 library:
   source-dirs: src
   ghc-options: -Wall

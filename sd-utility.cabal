@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.34.6.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d75ecf13f2484899011dc12e0d156a9b6caa7ce094d61840bf16de2e63dbdba
+-- hash: 2b23b3a7a5a04871e006dcebdc436e4ad62cb4c76ccc491032d4e9a8ad4e895e
 
 name:           sd-utility
 version:        0.1.0.0
@@ -57,6 +57,29 @@ library
       SD.Utility.Streaming
   other-modules:
       Paths_sd_utility
+  default-language: Haskell2010
+
+executable sd-utility-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_sd_utility
+  hs-source-dirs:
+      app
+  ghc-options: -O2 -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , cereal
+    , containers
+    , cpu
+    , mtl
+    , random
+    , scientific
+    , sd-utility
+    , store
+    , streaming
+    , streaming-bytestring
+    , time
   default-language: Haskell2010
 
 test-suite sd-utility-test
