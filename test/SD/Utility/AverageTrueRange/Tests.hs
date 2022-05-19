@@ -57,4 +57,4 @@ naiveATR atrCount elements =
             )
             (Nothing, [])
             elements
-   in naiveEMA atrCount trueRanges
+   in naiveEMA False atrCount trueRanges

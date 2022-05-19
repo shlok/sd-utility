@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2b23b3a7a5a04871e006dcebdc436e4ad62cb4c76ccc491032d4e9a8ad4e895e
+-- hash: 73cb21b79d157e53dee24757e70f19c7b2130d33efae29997cac868b7cc91a70
 
 name:           sd-utility
 version:        0.1.0.0
@@ -43,16 +43,17 @@ library
     , time
   exposed-modules:
       SD.Utility.AverageTrueRange
-      SD.Utility.Either
       SD.Utility.Calendar
-      SD.Utility.ExpMovingAverage
+      SD.Utility.Either
       SD.Utility.Exception
+      SD.Utility.ExpMovingAverage
       SD.Utility.IO
       SD.Utility.MaxLengthSequence
       SD.Utility.MinMaxSequence
       SD.Utility.MovingAverage
       SD.Utility.Random
       SD.Utility.Read
+      SD.Utility.RelativeStrengthIndex
       SD.Utility.Scientific
       SD.Utility.Streaming
   other-modules:
@@ -118,6 +119,7 @@ test-suite sd-utility-test
       SD.Utility.MinMaxSequence.Tests
       SD.Utility.MovingAverage.Tests
       SD.Utility.Read.Tests
+      SD.Utility.RelativeStrengthIndex.Tests
       SD.Utility.Scientific.Tests
       SD.Utility.Streaming.Tests
       Paths_sd_utility

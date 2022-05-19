@@ -41,16 +41,17 @@ library:
   ghc-options: -Wall
   exposed-modules:
   - SD.Utility.AverageTrueRange
-  - SD.Utility.Either
   - SD.Utility.Calendar
-  - SD.Utility.ExpMovingAverage
+  - SD.Utility.Either
   - SD.Utility.Exception
+  - SD.Utility.ExpMovingAverage
   - SD.Utility.IO
   - SD.Utility.MaxLengthSequence
   - SD.Utility.MinMaxSequence
   - SD.Utility.MovingAverage
   - SD.Utility.Random
   - SD.Utility.Read
+  - SD.Utility.RelativeStrengthIndex
   - SD.Utility.Scientific
   - SD.Utility.Streaming
 

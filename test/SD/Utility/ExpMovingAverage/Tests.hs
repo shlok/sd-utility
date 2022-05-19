@@ -22,6 +22,7 @@ tests =
     testEMA @Rational 1e-800 1e-800 "expMovingAvg (Rational)"
   ]
 
+-- | We do not test the smoothed EMA here; it is covered from the RSI tests.
 testEMA :: (Arbitrary f, Ord f, Show f, Fractional f) => f -> f -> String -> TestTree
 testEMA eps0 eps1 desc = testProperty desc $
   monadicIO $ do
@@ -37,7 +38,7 @@ testEMA eps0 eps1 desc = testProperty desc $
             eps0
             eps1
             (fromJust mEma)
-            (naiveEMA emaCount elements)
+            (naiveEMA False emaCount elements)
 
 areClose :: (Ord f, Fractional f) => f -> f -> f -> f -> Bool
 areClose eps0 eps1 x y =
@@ -46,9 +47,9 @@ areClose eps0 eps1 x y =
         || (y == 0 && d < eps0)
         || (x /= 0 && y /= 0 && d / x < eps1 && d / y < eps1)
 
-naiveEMA :: (Fractional f) => Int -> [f] -> f
-naiveEMA emaCount elements =
+naiveEMA :: (Fractional f) => Bool -> Int -> [f] -> f
+naiveEMA useSmoothed emaCount elements =
   let (firstElems, otherElems) = splitAt emaCount elements
       ma = sum firstElems / fromIntegral emaCount
-      k = 2 / (fromIntegral emaCount + 1)
+      k = if useSmoothed then 1 / fromIntegral emaCount else 2 / (fromIntegral emaCount + 1)
    in foldl' (\acc x -> acc * (1 - k) + x * k) ma otherElems
