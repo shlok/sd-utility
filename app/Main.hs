@@ -20,7 +20,7 @@ timeMinMaxSequence = do
         foldl'
           ( \(sequ, sum') x ->
               let sequ' = MMSeq.append x sequ
-                  max' = fromJust $ MMSeq.lookupValue sequ'
+                  max' = fromJust $ MMSeq.lookup sequ'
                in (sequ', sum' + max')
           )
           (fromJust $ MMSeq.empty seqLen MMSeqMax, 0 :: Int)

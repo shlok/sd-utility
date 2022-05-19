@@ -1,14 +1,16 @@
--- | The @'MMSeq' a@ type represents a sequence with a given maximum
--- length. Appending to an already full 'MMSeq' results in an element
--- first getting removed from the front. 'MMSeq' has support for fast
--- querying of the minimum or maximum value.
+-- | The @'MMSeq' a@ type represents a sequence with a given maximum length. Appending to an already
+-- full 'MMSeq' results in an element first getting removed from the front. 'MMSeq' has support for
+-- fast querying of the minimum or maximum value.
+--
+-- This module is intended to be imported qualified: @import qualified SD.Utility.MinMaxSequence as
+-- MMSeq@.
 module SD.Utility.MinMaxSequence
   ( MMSeq (),
     MMSeqSetting (..),
     empty,
     append,
-    lookupValue,
-    lookupFullValue,
+    lookup,
+    lookupFull,
   )
 where
 
@@ -17,6 +19,7 @@ import Data.Sequence (Seq (Empty, (:<|)), (|>))
 import qualified Data.Sequence as Seq
 import SD.Utility.MaxLengthSequence (MLSeq, full)
 import qualified SD.Utility.MaxLengthSequence as MLSeq (append, empty)
+import Prelude hiding (lookup)
 
 data MMSeqSetting = MMSeqMin | MMSeqMax
 
@@ -83,13 +86,13 @@ cleanBack set a =
           MMSeqMax -> a' <= a
     )
 
-{-# INLINE lookupValue #-}
-lookupValue :: MMSeq a -> Maybe a
-lookupValue MMSeq {sequ = Empty} = Nothing
-lookupValue MMSeq {sequ = head' :<| _} = Just $ fst head'
+{-# INLINE lookup #-}
+lookup :: MMSeq a -> Maybe a
+lookup MMSeq {sequ = Empty} = Nothing
+lookup MMSeq {sequ = head' :<| _} = Just $ fst head'
 
-{-# INLINE lookupFullValue #-}
-lookupFullValue :: MMSeq a -> Maybe a
-lookupFullValue s = do
+{-# INLINE lookupFull #-}
+lookupFull :: MMSeq a -> Maybe a
+lookupFull s = do
   guard . full $ mlSeq s
-  lookupValue s
+  lookup s
