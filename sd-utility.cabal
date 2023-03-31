@@ -1,11 +1,4 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.34.6.
---
--- see: https://github.com/sol/hpack
---
--- hash: 73cb21b79d157e53dee24757e70f19c7b2130d33efae29997cac868b7cc91a70
-
+cabal-version:  3.0
 name:           sd-utility
 version:        0.1.0.0
 synopsis:       Initial project template from stack
@@ -16,7 +9,7 @@ bug-reports:    https://github.com/shlok/sd-utility/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2016 Author name here
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 
