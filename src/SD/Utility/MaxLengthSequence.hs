@@ -7,6 +7,7 @@ module SD.Utility.MaxLengthSequence
   ( MLSeq (),
     empty,
     head,
+    tail,
     length,
     full,
     append,
@@ -14,9 +15,9 @@ module SD.Utility.MaxLengthSequence
   )
 where
 
-import Data.Sequence (Seq (Empty, (:<|)), singleton, (|>))
+import Data.Sequence (Seq (Empty, (:<|), (:|>)), singleton, (|>))
 import qualified Data.Sequence as Seq (empty, length)
-import Prelude hiding (head, length)
+import Prelude hiding (head, length, tail)
 
 data MLSeq a = MLSeq
   { maxLength :: !Int,
@@ -30,16 +31,21 @@ empty :: Int -> Maybe (MLSeq a)
 empty n
   | n <= 0 = Nothing
   | otherwise =
-    Just $
-      MLSeq
-        { maxLength = n,
-          elemsSeq = Seq.empty
-        }
+      Just $
+        MLSeq
+          { maxLength = n,
+            elemsSeq = Seq.empty
+          }
 
 {-# INLINE head #-}
 head :: MLSeq a -> Maybe a
 head MLSeq {elemsSeq = Empty} = Nothing
 head MLSeq {elemsSeq = head' :<| _} = Just head'
+
+{-# INLINE tail #-}
+tail :: MLSeq a -> Maybe a
+tail MLSeq {elemsSeq = Empty} = Nothing
+tail MLSeq {elemsSeq = _ :|> tail'} = Just tail'
 
 {-# INLINE length #-}
 length :: MLSeq a -> Int
