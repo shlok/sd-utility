@@ -9,7 +9,7 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        ghcVersion = "927";
+        ghcVersion = "928";
         packageName = "sd-utility";
 
         config = {};
@@ -20,7 +20,16 @@
               haskellPkgs = final.haskell.packages."ghc${ghcVersion}";
             in {
               myHaskellPackages = haskellPkgs.override {
-                overrides = hfinal: hprev: { 
+                overrides = hfinal: hprev: {
+                  order-statistic-tree =
+                    hfinal.callCabal2nix "order-statistic-tree"
+                      (final.fetchFromGitHub {
+                        owner = "shlok";
+                        repo = "ostree";
+                        rev = "1ef23f4b58883194f09579691663313c52743569";
+                        sha256 = "sha256-4lhY2M2K7huahaOmKRPXP0yN567aL3HuoyAhH6Fv2+o=";
+                      }) {};
+
                   ${packageName} = (hfinal.callCabal2nix "${packageName}" ./. {});
                 };
               };
