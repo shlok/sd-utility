@@ -28,6 +28,7 @@ library
     , containers
     , cpu
     , mtl
+    , order-statistic-tree
     , random
     , scientific
     , store
@@ -44,6 +45,7 @@ library
       SD.Utility.MaxLengthSequence
       SD.Utility.MinMaxSequence
       SD.Utility.MovingAverage
+      SD.Utility.Percentile
       SD.Utility.Random
       SD.Utility.Read
       SD.Utility.RelativeStrengthIndex
@@ -111,6 +113,7 @@ test-suite sd-utility-test
       SD.Utility.MaxLengthSequence.Tests
       SD.Utility.MinMaxSequence.Tests
       SD.Utility.MovingAverage.Tests
+      SD.Utility.Percentile.Tests
       SD.Utility.Read.Tests
       SD.Utility.RelativeStrengthIndex.Tests
       SD.Utility.Scientific.Tests

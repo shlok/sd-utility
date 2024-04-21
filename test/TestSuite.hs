@@ -10,6 +10,7 @@ import qualified SD.Utility.IO.Tests
 import qualified SD.Utility.MaxLengthSequence.Tests
 import qualified SD.Utility.MinMaxSequence.Tests
 import qualified SD.Utility.MovingAverage.Tests
+import qualified SD.Utility.Percentile.Tests
 import qualified SD.Utility.Read.Tests
 import qualified SD.Utility.RelativeStrengthIndex.Tests
 import qualified SD.Utility.Scientific.Tests
@@ -56,6 +57,9 @@ tests =
       testGroup
         "SD.Utility.MovingAverage.Tests"
         SD.Utility.MovingAverage.Tests.tests,
+      testGroup
+        "SD.Utility.Percentile.Tests"
+        SD.Utility.Percentile.Tests.tests,
       testGroup
         "SD.Utility.Read.Tests"
         SD.Utility.Read.Tests.tests,
