@@ -55,7 +55,7 @@ library
       Paths_sd_utility
   default-language: Haskell2010
 
-executable sd-utility-exe
+executable sd-utility
   main-is: Main.hs
   other-modules:
       Paths_sd_utility
