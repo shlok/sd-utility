@@ -9,7 +9,7 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        ghcVersion = "928";
+        ghcVersion = "965";
         packageName = "sd-utility";
 
         config = {};
@@ -19,28 +19,46 @@
             let
               haskellPkgs = final.haskell.packages."ghc${ghcVersion}";
             in {
-              myHaskellPackages = haskellPkgs.override {
+              myHaskellPkgs = haskellPkgs.override {
                 overrides = hfinal: hprev: {
+                  ${packageName} = (hfinal.callCabal2nix "${packageName}" ./. {});
+
                   order-statistic-tree =
                     hfinal.callCabal2nix "order-statistic-tree"
                       (final.fetchFromGitHub {
                         owner = "shlok";
                         repo = "ostree";
-                        rev = "1ef23f4b58883194f09579691663313c52743569";
-                        sha256 = "sha256-4lhY2M2K7huahaOmKRPXP0yN567aL3HuoyAhH6Fv2+o=";
+                        rev = "6b31b419ef60070e566b892d9ab6ce7bc8f5fa78";
+                        sha256 = "sha256-DaIt0sAGOqu6fMtXjRxiLGlO9G+0uHaZRgGbhx5BGmM=";
                       }) {};
 
-                  ${packageName} = (hfinal.callCabal2nix "${packageName}" ./. {});
+                  # 2024-06-04.
+                  # nixpkgs-unstable 4a4ecb0ab415c9fccfb005567a215e6a9564cdf5 (2024-06-03).
+                  # We want Ormolu 0.7.4 for better commenting within if-else.
+                  ormolu = hfinal.ormolu_0_7_4_0;
+                  # This version of Ormolu requires ghc-lib-parser 0.8.x.
+                  ghc-lib-parser = hfinal.ghc-lib-parser_9_8_2_20240223;
+                  # Since we specify haskell-language-server below, we also need to bring a few more
+                  # things in align with the same ghc-lib-parser. (The fourmolu and stylish-haskell
+                  # lines should be avoidable by disabling those flags in haskell-language-server,
+                  # but currently this seems non-trivial; see
+                  # https://github.com/srid/haskell-flake/issues/245; see also
+                  # configuration-ghc-9.2.x.nix in nixpkgs.)
+                  fourmolu = hfinal.fourmolu_0_15_0_0;
+                  ghc-lib-parser-ex = hfinal.ghc-lib-parser-ex_9_8_0_2;
+                  hlint = hfinal.hlint_3_8;
+                  stylish-haskell = hfinal.stylish-haskell_0_14_6_0;
                 };
               };
 
-              ${packageName} = final.myHaskellPackages.${packageName};
+              ${packageName} = final.myHaskellPkgs.${packageName};
 
-              myDevShell = final.myHaskellPackages.shellFor {
+              myDevShell = final.myHaskellPkgs.shellFor {
                 packages = p: [ p.${packageName} ];
                 nativeBuildInputs = [
-                  haskellPkgs.cabal-install
-                  haskellPkgs.haskell-language-server
+                  final.myHaskellPkgs.cabal-install
+                  final.myHaskellPkgs.haskell-language-server
+                  final.myHaskellPkgs.ormolu
                 ];
               };
             })
